@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+{% load static %}
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Baptême Annie Charlen</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#f8f5f0; font-family:'Lato',sans-serif; color:#2c1a0e; }
+
+.topbar {
+  background: linear-gradient(135deg, #8c6d24, #c9a84c, #8c6d24);
+  padding: 1.25rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 20px rgba(140,109,36,0.3);
+}
+
+.topbar-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  letter-spacing: 3px;
+  color: #fff;
+}
+
+.topbar-date {
+  font-size: 12px;
+  color: rgba(255,253,240,0.7);
+  letter-spacing: 1px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 4px;
+  padding: 1.5rem;
+  border: 1px solid rgba(201,168,76,0.15);
+  border-top: 3px solid var(--accent, #c9a84c);
+  box-shadow: 0 2px 12px rgba(44,26,14,0.06);
+  text-align: center;
+}
+
+.stat-num {
+  font-family: 'Cinzel', serif;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--accent, #c9a84c);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #8c7a60;
+  text-transform: uppercase;
+}
+
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: #8c6d24;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(201,168,76,0.2);
+}
+
+.table-wrap {
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid rgba(201,168,76,0.15);
+  box-shadow: 0 2px 12px rgba(44,26,14,0.06);
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+thead th {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #8c6d24;
+  text-transform: uppercase;
+  padding: 0.85rem 1rem;
+  text-align: left;
+  background: #fdf8f0;
+  border-bottom: 1px solid rgba(201,168,76,0.2);
+}
+
+tbody td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(201,168,76,0.08);
+  color: #2c1a0e;
+}
+
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: #fdf8f0; }
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.badge-oui { background: #e8f5e9; color: #2e7d32; }
+.badge-non { background: #fce4ec; color: #c62828; }
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #8c6d24;
+  text-decoration: none;
+  font-size: 13px;
+  margin-bottom: 1.5rem;
+  letter-spacing: 1px;
+}
+.back-link:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">✦ Tableau de bord — Baptême Annie Charlen</div>
+  <div class="topbar-date">23 Mai 2026</div>
+</div>
+
+<div class="container">
+  <a href="/" class="back-link">← Voir l'invitation</a>
+
+  <div class="stats-grid">
+    <div class="stat-card" style="--accent:#c9a84c">
+      <div class="stat-num">{{ total_confirmations|add:total_absences }}</div>
+      <div class="stat-label">Réponses reçues</div>
+    </div>
+    <div class="stat-card" style="--accent:#4caf50">
+      <div class="stat-num">{{ total_confirmations }}</div>
+      <div class="stat-label">Présent(e)s</div>
+    </div>
+    <div class="stat-card" style="--accent:#e57373">
+      <div class="stat-num">{{ total_absences }}</div>
+      <div class="stat-label">Absent(e)s</div>
+    </div>
+    <div class="stat-card" style="--accent:#2d5a8e">
+      <div class="stat-num">{{ total_personnes }}</div>
+      <div class="stat-label">Personnes au total</div>
+    </div>
+  </div>
+
+  <div class="section-title">Liste des confirmations</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Prénom & Nom</th>
+          <th>Téléphone</th>
+          <th>Présence</th>
+          <th>Accompagnateurs</th>
+          <th>Total</th>
+          <th>Date réponse</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for inv in invitations %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td><strong>{{ inv.prenom }} {{ inv.nom }}</strong></td>
+          <td>{{ inv.telephone|default:"—" }}</td>
+          <td>
+            <span class="badge badge-{{ inv.presence }}">
+              {% if inv.presence == 'oui' %}✓ Présent(e){% else %}✗ Absent(e){% endif %}
+            </span>
+          </td>
+          <td>
+            {% if inv.accompagnateurs.all %}
+              {% for a in inv.accompagnateurs.all %}
+                {{ a.prenom }} {{ a.nom }}{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            {% else %}—{% endif %}
+          </td>
+          <td><strong>{{ inv.nb_total }}</strong></td>
+          <td style="font-size:12px; color:#8c7a60;">{{ inv.date_reponse|date:"d/m/Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" style="text-align:center; padding:2rem; color:#8c7a60; font-style:italic;">Aucune réponse reçue pour le moment.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</body>
+</html>

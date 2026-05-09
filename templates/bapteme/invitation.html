@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="fr">
+{% load static %}
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baptême & Première Communion — Pare Annie Charlen</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --gold: #c9a84c;
+  --gold-light: #e8d08a;
+  --gold-dark: #8c6d24;
+  --cream: #fdf8f0;
+  --parchment: #f5ecda;
+  --brown-deep: #2c1a0e;
+  --brown: #5a3e20;
+  --blue-sacred: #2d5a8e;
+  --white-pearl: #fffdf8;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  font-family: 'Lato', sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════
+   FOND ANIMÉ — particules dorées
+═══════════════════════════════════ */
+#particles-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ═══════════════════════════════════
+   OVERLAY ENVELOPPE — agrandi
+═══════════════════════════════════ */
+#envelope-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, #2c1a0e 0%, #1a0f05 100%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+#envelope-overlay.hide {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1.05);
+}
+
+.envelope-hint {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: rgba(201,168,76,0.7);
+  text-transform: uppercase;
+  margin-top: 2.5rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* ─── ENVELOPPE SVG — plus grande ─── */
+.envelope-wrapper {
+  cursor: pointer;
+  perspective: 1200px;
+  transition: transform 0.3s ease;
+}
+.envelope-wrapper:hover { transform: scale(1.02); }
+
+.envelope-svg { overflow: visible; }
+
+.env-flap {
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.envelope-wrapper.open .env-flap {
+  transform: rotateX(-180deg);
+}
+
+.env-letter {
+  transform: translateY(0px);
+  opacity: 0;
+  transition: transform 1.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.55s,
+              opacity 0.4s ease 0.55s;
+}
+.envelope-wrapper.open .env-letter {
+  transform: translateY(-140px);
+  opacity: 1;
+}
+
+.env-seal {
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+.envelope-wrapper.open .env-seal {
+  transform: scale(0);
+  opacity: 0;
+}
+
+/* ═══════════════════════════════════
+   PAGE PRINCIPALE
+═══════════════════════════════════ */
+#main-page {
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;
+  min-height: 100vh;
+}
+#main-page.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-wrapper {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 5rem;
+}
+
+/* ─── CARTE ─── */
+.invitation-card {
+  background: var(--white-pearl);
+  position: relative;
+  border-radius: 3px;
+  box-shadow:
+    0 0 0 1px rgba(201,168,76,0.2),
+    0 0 0 8px rgba(201,168,76,0.06),
+    0 0 0 9px rgba(201,168,76,0.15),
+    0 30px 80px rgba(44,26,14,0.2),
+    0 10px 30px rgba(44,26,14,0.1);
+  overflow: hidden;
+  animation: cardReveal 1s ease both;
+  animation-delay: 0.5s;
+}
+
+@keyframes cardReveal {
+  from { opacity: 0; transform: translateY(40px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ─── HEADER ─── */
+.card-header {
+  background: linear-gradient(160deg, #8c6d24 0%, #c9a84c 25%, #e8d08a 50%, #c9a84c 75%, #8c6d24 100%);
+  padding: 3.5rem 3rem 3rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.header-top-ornament { margin-bottom: 1.5rem; opacity: 0.8; }
+
+.header-subtitle {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 5px;
+  color: rgba(255,253,240,0.85);
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+}
+
+.header-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.8rem, 7vw, 4.2rem);
+  font-weight: 300;
+  font-style: italic;
+  color: #fff;
+  text-shadow: 0 2px 20px rgba(44,26,14,0.3), 0 0 40px rgba(255,253,240,0.2);
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+  letter-spacing: 2px;
+}
+
+.header-event {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(0.75rem, 2vw, 0.95rem);
+  color: rgba(255,253,240,0.9);
+  letter-spacing: 3px;
+  margin-top: 1.5rem;
+}
+
+.header-bottom-ornament { margin-top: 1.5rem; opacity: 0.8; }
+
+/* ─── PHOTO — bien visible ─── */
+.photo-section {
+  display: flex;
+  justify-content: center;
+  margin-top: -60px;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 0.5rem;
+}
+
+.photo-frame {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c9a84c, #e8d08a, #c9a84c);
+  padding: 5px;
+  box-shadow: 0 12px 45px rgba(44,26,14,0.3), 0 0 0 3px rgba(201,168,76,0.35);
+}
+
+.photo-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f5ecda, #fdf8f0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 3px solid var(--white-pearl);
+}
+
+/* Image réelle */
+.photo-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 50%;
+  display: block;
+}
+
+/* Placeholder si pas d'image */
+.photo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--gold);
+}
+.photo-placeholder-text {
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--gold-dark);
+  text-align: center;
+  opacity: 0.7;
+}
+
+/* ─── CORPS ─── */
+.card-body {
+  padding: 2rem 3.5rem 2.5rem;
+  text-align: center;
+}
+
+.intro-verse {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--blue-sacred);
+  line-height: 1.9;
+  margin-bottom: 0.5rem;
+}
+
+.verse-ref {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  margin-bottom: 2rem;
+}
+
+.ornament-divider {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+.ornament-divider::before, .ornament-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(201,168,76,0.4), rgba(201,168,76,0.7), rgba(201,168,76,0.4), transparent);
+}
+.ornament-divider svg { flex-shrink: 0; }
+
+.intro-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: var(--brown);
+  line-height: 1.9;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+/* ─── DÉTAILS — grille épurée 2×2 ─── */
+.details-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.1rem;
+  margin: 2rem 0;
+}
+
+.detail-card {
+  background: linear-gradient(135deg, var(--parchment), var(--cream));
+  border: 1px solid rgba(201,168,76,0.18);
+  border-radius: 4px;
+  padding: 1.35rem 1.25rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+}
+
+.detail-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(44,26,14,0.08);
+}
+
+.detail-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 40%;
+  height: 1.5px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+}
+
+.detail-icon {
+  margin-bottom: 0.6rem;
+  color: var(--gold);
+  display: flex;
+  justify-content: center;
+}
+
+.detail-label {
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: var(--gold-dark);
+  text-transform: uppercase;
+  margin-bottom: 0.45rem;
+  opacity: 0.85;
+}
+
+.detail-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  color: var(--brown-deep);
+  line-height: 1.5;
+}
+
+.detail-value strong {
+  font-weight: 600;
+  color: var(--brown-deep);
+  display: block;
+  font-size: 1.2rem;
+}
+
+.detail-value a {
+  color: var(--blue-sacred);
+  text-decoration: none;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+.detail-value a:hover { text-decoration: underline; opacity: 1; }
+
+/* ─── CROIX ─── */
+.cross-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2rem 0 1rem;
+  gap: 0;
+}
+
+/* ─── RSVP ─── */
+.rsvp-section {
+  background: linear-gradient(135deg, var(--parchment), #fef8ee);
+  border-top: 1px solid rgba(201,168,76,0.2);
+  padding: 3rem;
+  text-align: center;
+}
+
+.rsvp-cta-title {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 5px;
+  color: var(--gold-dark);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.rsvp-cta-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-style: italic;
+  color: var(--brown);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.btn-rsvp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light), var(--gold));
+  background-size: 200% 200%;
+  color: var(--white-pearl);
+  border: none;
+  padding: 1rem 3rem;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 4px;
+  cursor: pointer;
+  border-radius: 2px;
+  text-transform: uppercase;
+  box-shadow: 0 6px 30px rgba(140,109,36,0.35), 0 2px 8px rgba(140,109,36,0.2);
+  transition: all 0.4s ease;
+  animation: shimmer 3s ease infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.btn-rsvp:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(140,109,36,0.45), 0 4px 12px rgba(140,109,36,0.25);
+}
+
+/* ─── FOOTER ─── */
+.card-footer {
+  background: linear-gradient(160deg, #2c1a0e, #1a0f05);
+  padding: 2rem 3rem;
+  text-align: center;
+}
+
+.footer-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: rgba(201,168,76,0.6);
+}
+
+/* ═══════════════════════════════════
+   MODAL RSVP
+═══════════════════════════════════ */
+#modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28,16,6,0.85);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+#modal-overlay.open { opacity: 1; pointer-events: all; }
+
+.modal-card {
+  background: var(--white-pearl);
+  border-radius: 4px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(40px) scale(0.95);
+  transition: transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+  position: relative;
+}
+#modal-overlay.open .modal-card { transform: translateY(0) scale(1); }
+
+.modal-header {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light), var(--gold));
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+}
+
+.modal-title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: var(--white-pearl);
+  text-transform: uppercase;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  width: 32px; height: 32px;
+  border: 1px solid rgba(255,253,240,0.4);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--white-pearl);
+  cursor: pointer;
+  font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.modal-close:hover { background: rgba(255,253,240,0.15); }
+
+.modal-body { padding: 2rem; }
+
+.presence-row { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+
+.presence-opt {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  color: var(--brown);
+  background: var(--cream);
+  transition: all 0.2s;
+}
+.presence-opt.selected {
+  border-color: var(--gold);
+  background: linear-gradient(135deg, var(--parchment), #fef8ee);
+  color: var(--brown-deep);
+}
+
+.radio-ring {
+  width: 14px; height: 14px;
+  border: 1.5px solid rgba(201,168,76,0.5);
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s;
+}
+.presence-opt.selected .radio-ring { border-color: var(--gold); }
+.radio-ring::after {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.presence-opt.selected .radio-ring::after { opacity: 1; }
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.form-row.single { grid-template-columns: 1fr; }
+
+.form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+
+.form-label {
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 2.5px;
+  color: var(--gold-dark);
+  text-transform: uppercase;
+}
+
+.form-input {
+  border: 1px solid rgba(201,168,76,0.35);
+  border-radius: 2px;
+  padding: 0.7rem 0.85rem;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  color: var(--brown-deep);
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+}
+.form-input::placeholder { color: rgba(90,62,32,0.35); }
+
+.accomp-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 3px;
+  background: var(--cream);
+  cursor: pointer;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  color: var(--brown);
+  margin-bottom: 1rem;
+  transition: background 0.2s;
+}
+.accomp-toggle:hover { background: var(--parchment); }
+
+.checkbox-box {
+  width: 18px; height: 18px;
+  border: 1.5px solid rgba(201,168,76,0.5);
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.checkbox-box.on { background: var(--gold); border-color: var(--gold); }
+.checkbox-box svg { display: none; }
+.checkbox-box.on svg { display: block; }
+
+.accomp-block {
+  display: none;
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 3px;
+  padding: 1.25rem;
+  background: #fff;
+  margin-bottom: 1rem;
+}
+.accomp-block.show { display: block; }
+
+.count-control {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.count-control label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  color: var(--brown);
+}
+
+.cnt-btn {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(201,168,76,0.4);
+  background: #fff;
+  color: var(--gold-dark);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+  margin-left: auto;
+}
+.cnt-btn:hover { background: var(--parchment); }
+
+.cnt-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  min-width: 30px;
+  text-align: center;
+  color: var(--brown-deep);
+}
+
+.accomp-list-items { margin-top: 0.75rem; }
+
+.accomp-item {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+.accomp-num-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  color: var(--gold);
+  width: 18px;
+  text-align: center;
+}
+
+textarea.form-input { resize: vertical; min-height: 75px; }
+
+.btn-submit {
+  width: 100%;
+  margin-top: 1.25rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  color: var(--white-pearl);
+  border: none;
+  border-radius: 2px;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(140,109,36,0.3);
+}
+.btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(140,109,36,0.4);
+}
+
+.confirmation-view { display: none; text-align: center; padding: 3rem 2rem; }
+.confirmation-view.show { display: block; }
+
+.confirm-circle {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.5rem;
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+.confirm-title {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  color: var(--gold-dark);
+  margin-bottom: 0.75rem;
+}
+.confirm-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--brown);
+  line-height: 1.7;
+}
+
+/* ─── AUDIO ─── */
+#audio-ctrl {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 200;
+  display: none;
+}
+#audio-ctrl.visible { display: block; }
+
+.audio-btn {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(140,109,36,0.4);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.3s ease;
+}
+.audio-btn:hover { transform: scale(1.1); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 600px) {
+  .card-body { padding: 1.75rem 1.5rem 2rem; }
+  .rsvp-section { padding: 2rem 1.5rem; }
+  .card-footer { padding: 1.5rem; }
+  .details-container { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .presence-row { flex-direction: column; }
+  .modal-body { padding: 1.5rem; }
+  .accomp-item { grid-template-columns: 1fr 1fr; }
+  .accomp-num-badge { display: none; }
+}
+
+/* ─── REVEAL ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(25px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.in { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+
+<!-- ════════════════════════════════
+     OVERLAY ENVELOPPE — agrandi
+════════════════════════════════ -->
+<div id="envelope-overlay">
+  <div class="envelope-wrapper" id="envelopeEl" onclick="openEnvelope()">
+    <!--
+      Enveloppe agrandie : 480×320
+      Textes plus grands et mieux positionnés
+    -->
+    <svg class="envelope-svg" width="480" height="320" viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg">
+      <!-- Corps enveloppe -->
+      <rect x="10" y="100" width="460" height="210" rx="5"
+            fill="#f5ecda" stroke="#c9a84c" stroke-width="1.5"/>
+
+      <!-- Bords intérieurs diagonaux (indiquant les plis) -->
+      <path d="M10 100 L240 215 L470 100" fill="none" stroke="#c9a84c" stroke-width="1" opacity="0.4"/>
+      <path d="M10 310 L160 215" fill="none" stroke="#c9a84c" stroke-width="1" opacity="0.4"/>
+      <path d="M470 310 L320 215" fill="none" stroke="#c9a84c" stroke-width="1" opacity="0.4"/>
+
+      <!-- Motif décoratif fond enveloppe -->
+      <rect x="20" y="110" width="440" height="190" rx="3"
+            fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.2"/>
+
+      <!-- Lettre qui dépasse -->
+      <g class="env-letter">
+        <rect x="100" y="55" width="280" height="185" rx="4"
+              fill="#fffdf8" stroke="#e8d08a" stroke-width="1.2"/>
+        <!-- Lignes déco sur la lettre -->
+        <line x1="125" y1="95" x2="355" y2="95" stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+        <line x1="125" y1="112" x2="355" y2="112" stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+        <line x1="125" y1="129" x2="355" y2="129" stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+        <line x1="125" y1="146" x2="300" y2="146" stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+        <!-- Nom sur la lettre -->
+        <text x="240" y="80" font-family="Cormorant Garamond, serif"
+              font-size="15" font-style="italic" fill="#c9a84c"
+              text-anchor="middle">Pare Annie Charlen</text>
+        <!-- Petite croix sur la lettre -->
+        <rect x="236" y="162" width="4" height="22" rx="1.5" fill="#c9a84c" opacity="0.55"/>
+        <rect x="226" y="170" width="24" height="4" rx="1.5" fill="#c9a84c" opacity="0.55"/>
+      </g>
+
+      <!-- Rabat supérieur -->
+      <g class="env-flap">
+        <!-- Zone visible du rabat -->
+        <path d="M10 100 L240 218 L470 100 L470 103 L240 221 L10 103 Z"
+              fill="#e8d4a0" stroke="#c9a84c" stroke-width="0.5"/>
+        <!-- Surface rabat -->
+        <path d="M10 100 L240 218 L470 100"
+              fill="#f0e0b0" stroke="#c9a84c" stroke-width="1.5"/>
+        <!-- Ornement sur le rabat -->
+        <path d="M215 148 Q240 130 265 148 Q290 165 265 178 Q240 191 215 178 Q190 165 215 148Z"
+              fill="rgba(201,168,76,0.2)"/>
+        <path d="M228 163 Q240 153 252 163 Q264 173 252 180 Q240 187 228 180 Q216 173 228 163Z"
+              fill="rgba(201,168,76,0.12)"/>
+      </g>
+
+      <!-- Sceau central — plus grand -->
+      <g class="env-seal" transform="translate(240, 210)">
+        <circle cx="0" cy="0" r="32" fill="#c9a84c" opacity="0.95"/>
+        <circle cx="0" cy="0" r="26" fill="none" stroke="#fff" stroke-width="1" opacity="0.4"/>
+        <circle cx="0" cy="0" r="20" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+        <!-- Nom sur le sceau -->
+        <text x="0" y="-8" font-family="Cinzel, serif" font-size="8.5" fill="#fff"
+              text-anchor="middle" letter-spacing="1">PARE</text>
+        <text x="0" y="3" font-family="Cinzel, serif" font-size="6.5" fill="rgba(255,255,255,0.75)"
+              text-anchor="middle" letter-spacing="0.5">ANNIE</text>
+        <!-- Croix sur le sceau -->
+        <rect x="-1.8" y="9" width="3.5" height="14" rx="1.2" fill="rgba(255,255,255,0.85)"/>
+        <rect x="-7.5" y="14" width="15" height="3.5" rx="1.2" fill="rgba(255,255,255,0.85)"/>
+      </g>
+
+      <!-- Texte d'invitation sur l'enveloppe (visible avant ouverture) -->
+      <text x="240" y="270" font-family="Cinzel, serif" font-size="11"
+            fill="#8c6d24" text-anchor="middle" letter-spacing="2" opacity="0.75">
+        Baptême &amp; Première Communion
+      </text>
+      <text x="240" y="290" font-family="Cormorant Garamond, serif" font-size="13"
+            font-style="italic" fill="#8c6d24" text-anchor="middle" opacity="0.65">
+        23 Mai 2026 · Ouagadougou
+      </text>
+    </svg>
+  </div>
+  <div class="envelope-hint">✦ &nbsp; Cliquez pour ouvrir votre invitation &nbsp; ✦</div>
+</div>
+
+<!-- ════════════════════════════════
+     PAGE PRINCIPALE
+════════════════════════════════ -->
+<div id="main-page">
+  <div class="page-wrapper">
+    <div class="invitation-card">
+
+      <!-- EN-TÊTE DORÉE -->
+      <div class="card-header">
+        <div class="header-top-ornament">
+          <svg width="300" height="30" viewBox="0 0 300 30" xmlns="http://www.w3.org/2000/svg">
+            <line x1="0" y1="15" x2="100" y2="15" stroke="rgba(255,253,240,0.4)" stroke-width="0.5"/>
+            <path d="M110 15 Q120 5 130 15 Q140 25 150 15 Q160 5 170 15 Q180 25 190 15"
+                  fill="none" stroke="rgba(255,253,240,0.5)" stroke-width="0.8"/>
+            <line x1="200" y1="15" x2="300" y2="15" stroke="rgba(255,253,240,0.4)" stroke-width="0.5"/>
+            <circle cx="150" cy="15" r="3" fill="rgba(255,253,240,0.6)"/>
+          </svg>
+        </div>
+
+        <div class="header-subtitle">La famille Paré vous invite à célébrer</div>
+        <div class="header-name">Pare Annie Charlen</div>
+        <div class="header-event">✦ &nbsp; Baptême &nbsp; &amp; &nbsp; Première Communion &nbsp; ✦</div>
+
+        <div class="header-bottom-ornament">
+          <svg width="260" height="30" viewBox="0 0 260 30" xmlns="http://www.w3.org/2000/svg">
+            <line x1="0" y1="15" x2="80" y2="15" stroke="rgba(255,253,240,0.4)" stroke-width="0.5"/>
+            <path d="M90 5 L95 15 L100 5 L105 25 L110 5 L115 15 L120 5"
+                  fill="none" stroke="rgba(255,253,240,0.4)" stroke-width="0.8"/>
+            <circle cx="130" cy="15" r="4" fill="rgba(255,253,240,0.5)"/>
+            <path d="M140 5 L145 15 L150 5 L155 25 L160 5 L165 15 L170 5"
+                  fill="none" stroke="rgba(255,253,240,0.4)" stroke-width="0.8"/>
+            <line x1="180" y1="15" x2="260" y2="15" stroke="rgba(255,253,240,0.4)" stroke-width="0.5"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- PHOTO — bien centrée et visible -->
+      <div class="photo-section reveal">
+        <div class="photo-frame">
+          <div class="photo-inner">
+            <!--
+              PHOTO DE ANNIE CHARLEN
+              Remplacez le src par le chemin réel, ex:
+                {% static 'images/annie.jpg' %}  (template Django)
+              ou simplement:
+                /static/images/annie.jpg
+              L'image sera centrée, agrandie et rognée en cercle.
+            -->
+            <img
+              src="{% static 'images/annie.jpg' %}"
+              alt="Pare Annie Charlen"
+              id="anniePhoto"
+              onerror="this.style.display='none'; document.getElementById('photoPlaceholder').style.display='flex';"
+            >
+            <div class="photo-placeholder" id="photoPlaceholder" style="display:none;">
+              <svg width="40" height="55" viewBox="0 0 40 55" fill="none">
+                <rect x="17" y="0" width="6" height="55" rx="2" fill="#c9a84c" opacity="0.5"/>
+                <rect x="0" y="14" width="40" height="6" rx="2" fill="#c9a84c" opacity="0.5"/>
+                <circle cx="20" cy="8" r="4" fill="none" stroke="#c9a84c" stroke-width="1" opacity="0.5"/>
+              </svg>
+              <div class="photo-placeholder-text">Photo à<br>ajouter</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CORPS -->
+      <div class="card-body">
+
+        <div class="intro-verse reveal">
+          « Laissez venir à moi les petits enfants, et ne les en empêchez pas,<br>
+          car le Royaume de Dieu est à ceux qui leur ressemblent. »
+        </div>
+        <div class="verse-ref reveal">— Luc 18:16</div>
+
+        <div class="ornament-divider reveal">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <circle cx="14" cy="14" r="5" fill="#c9a84c" opacity="0.7"/>
+            <circle cx="14" cy="14" r="11" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.4"/>
+            <line x1="14" y1="2" x2="14" y2="6" stroke="#c9a84c" stroke-width="1" opacity="0.5"/>
+            <line x1="14" y1="22" x2="14" y2="26" stroke="#c9a84c" stroke-width="1" opacity="0.5"/>
+            <line x1="2" y1="14" x2="6" y2="14" stroke="#c9a84c" stroke-width="1" opacity="0.5"/>
+            <line x1="22" y1="14" x2="26" y2="14" stroke="#c9a84c" stroke-width="1" opacity="0.5"/>
+          </svg>
+        </div>
+
+        <p class="intro-text reveal">
+          C'est avec un cœur débordant de joie et de gratitude envers Dieu que
+          la famille <strong>Paré</strong> vous convie à partager ce moment de grâce,
+          de lumière et de foi pour notre chère <em>Annie Charlen</em>.
+          Votre présence sera le plus beau cadeau de cette journée bénie.
+        </p>
+
+        <!-- DÉTAILS — grille épurée 2×2 sans "Tenue recommandée" -->
+        <div class="details-container">
+
+          <div class="detail-card reveal">
+            <div class="detail-icon">
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+                <rect x="3" y="5" width="20" height="18" rx="2" fill="none" stroke="#c9a84c" stroke-width="1.2"/>
+                <line x1="3" y1="10" x2="23" y2="10" stroke="#c9a84c" stroke-width="0.8"/>
+                <rect x="8" y="2" width="2" height="5" rx="1" fill="#c9a84c"/>
+                <rect x="16" y="2" width="2" height="5" rx="1" fill="#c9a84c"/>
+                <text x="13" y="20" font-family="Cinzel,serif" font-size="7" fill="#c9a84c" text-anchor="middle">23</text>
+              </svg>
+            </div>
+            <div class="detail-label">Date</div>
+            <div class="detail-value">
+              Samedi
+              <strong>23 Mai 2026</strong>
+            </div>
+          </div>
+
+          <div class="detail-card reveal">
+            <div class="detail-icon">
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+                <circle cx="13" cy="13" r="10" fill="none" stroke="#c9a84c" stroke-width="1.2"/>
+                <line x1="13" y1="5" x2="13" y2="13" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="13" y1="13" x2="18" y2="17" stroke="#c9a84c" stroke-width="1.2" stroke-linecap="round"/>
+                <circle cx="13" cy="13" r="1.5" fill="#c9a84c"/>
+              </svg>
+            </div>
+            <div class="detail-label">Heure</div>
+            <div class="detail-value">
+              Cérémonie dès
+              <strong>9 h 00</strong>
+            </div>
+          </div>
+
+          <div class="detail-card reveal">
+            <div class="detail-icon">
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+                <rect x="10" y="1" width="6" height="24" rx="2" fill="none" stroke="#c9a84c" stroke-width="1.2"/>
+                <rect x="1" y="8" width="24" height="6" rx="2" fill="none" stroke="#c9a84c" stroke-width="1.2"/>
+              </svg>
+            </div>
+            <div class="detail-label">Cérémonie</div>
+            <div class="detail-value">
+              Église de la Famille
+              <strong>Ouagadougou</strong>
+            </div>
+          </div>
+
+          <div class="detail-card reveal">
+            <div class="detail-icon">
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+                <path d="M13 2 C8.5 2 5 6 5 11 C5 18 13 24 13 24 C13 24 21 18 21 11 C21 6 17.5 2 13 2Z"
+                      fill="none" stroke="#c9a84c" stroke-width="1.2"/>
+                <circle cx="13" cy="11" r="3" fill="none" stroke="#c9a84c" stroke-width="1"/>
+              </svg>
+            </div>
+            <div class="detail-label">Réception</div>
+            <div class="detail-value">
+              Famille Paré — Garghin
+              <br><a href="https://goo.gl/maps/huQHSBX2UUPaWR7K6" target="_blank">📍 Voir sur la carte</a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- CROIX décorative seule, sans le texte "confirmer avant..." -->
+        <div class="cross-section reveal">
+          <svg width="55" height="78" viewBox="0 0 55 78" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="crossG" x1="0" y1="0" x2="55" y2="78" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#c9a84c"/>
+                <stop offset="50%" stop-color="#e8d08a"/>
+                <stop offset="100%" stop-color="#8c6d24"/>
+              </linearGradient>
+            </defs>
+            <rect x="22" y="0" width="11" height="78" rx="3" fill="url(#crossG)"/>
+            <rect x="0" y="20" width="55" height="11" rx="3" fill="url(#crossG)"/>
+            <circle cx="27.5" cy="25.5" r="5.5" fill="#fff8ee" stroke="#c9a84c" stroke-width="1"/>
+            <circle cx="27.5" cy="5.5" r="3.5" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
+          </svg>
+        </div>
+
+      </div><!-- end card-body -->
+
+      <!-- RSVP -->
+      <div class="rsvp-section reveal">
+        <div class="rsvp-cta-title">Votre réponse nous est précieuse</div>
+        <div class="rsvp-cta-text">
+          Chaque confirmation nous aide à préparer cette journée<br>
+          avec tout l'amour qu'elle mérite.
+        </div>
+        <button class="btn-rsvp" onclick="openModal()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <rect x="1" y="3" width="14" height="10" rx="2" fill="none" stroke="rgba(255,253,240,0.8)" stroke-width="1.2"/>
+            <path d="M1 5 L8 9 L15 5" fill="none" stroke="rgba(255,253,240,0.8)" stroke-width="1.2"/>
+          </svg>
+          Confirmer ma présence
+        </button>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="card-footer">
+        <div class="footer-text">
+          « Que la grâce du Seigneur illumine ce jour béni et tous ceux qui s'y joindront. »
+        </div>
+      </div>
+
+    </div><!-- end invitation-card -->
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     MODAL FORMULAIRE
+════════════════════════════════ -->
+<div id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title">Confirmation de Présence</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body" id="formView">
+      <div class="presence-row">
+        <div class="presence-opt selected" id="pOui" onclick="setPresence('oui')">
+          <div class="radio-ring"></div> Je serai présent(e) 🎉
+        </div>
+        <div class="presence-opt" id="pNon" onclick="setPresence('non')">
+          <div class="radio-ring"></div> Je ne pourrai pas venir
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">Prénom *</div>
+          <input class="form-input" id="f_prenom" type="text" placeholder="Votre prénom">
+        </div>
+        <div class="form-group">
+          <div class="form-label">Nom *</div>
+          <input class="form-input" id="f_nom" type="text" placeholder="Votre nom">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">Téléphone</div>
+          <input class="form-input" id="f_tel" type="tel" placeholder="+226 ...">
+        </div>
+        <div class="form-group">
+          <div class="form-label">Email</div>
+          <input class="form-input" id="f_email" type="email" placeholder="votre@email.com">
+        </div>
+      </div>
+
+      <div class="accomp-toggle" onclick="toggleAccomp()">
+        <div class="checkbox-box" id="accompChk">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M1.5 5 L4 7.5 L8.5 2.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        Je serai accompagné(e)
+      </div>
+
+      <div class="accomp-block" id="accompBlock">
+        <div class="count-control">
+          <label>Nombre d'accompagnateurs :</label>
+          <button class="cnt-btn" onclick="changeNb(-1)">−</button>
+          <div class="cnt-num" id="nbDisplay">1</div>
+          <button class="cnt-btn" onclick="changeNb(1)">+</button>
+        </div>
+        <div class="accomp-list-items" id="accompItems"></div>
+      </div>
+
+      <div class="form-row single">
+        <div class="form-group">
+          <div class="form-label">Message (facultatif)</div>
+          <textarea class="form-input" id="f_msg" placeholder="Un mot pour la famille Paré…"></textarea>
+        </div>
+      </div>
+
+      <button class="btn-submit" onclick="submitRSVP()">Envoyer ma confirmation</button>
+    </div>
+
+    <div class="confirmation-view" id="confirmView">
+      <div class="confirm-circle">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M5 14 L11 20 L23 8" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="confirm-title" id="confirmTitle">Merci !</div>
+      <div class="confirm-text" id="confirmText"></div>
+    </div>
+  </div>
+</div>
+
+<!-- AUDIO — lecture automatique en boucle -->
+<audio id="bgMusic" loop preload="auto">
+  <source src="{% static 'audio/bapteme.mp3' %}" type="audio/mpeg">
+  <!-- Fallback si format différent -->
+  <source src="{% static 'audio/bapteme.ogg' %}" type="audio/ogg">
+</audio>
+
+<!-- Bouton audio flottant -->
+<div id="audio-ctrl">
+  <button class="audio-btn" onclick="toggleAudio()" title="Musique" id="audioBtn">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <rect x="2" y="3" width="5" height="12" rx="1" fill="white"/>
+      <rect x="11" y="3" width="5" height="12" rx="1" fill="white"/>
+    </svg>
+  </button>
+</div>
+
+<script>
+// ═══════════════════════════════
+// VÉRIFICATION PHOTO AU CHARGEMENT
+// ═══════════════════════════════
+(function() {
+  const img = document.getElementById('anniePhoto');
+  const placeholder = document.getElementById('photoPlaceholder');
+  if (img) {
+    // Si l'image charge correctement, masquer le placeholder
+    img.addEventListener('load', function() {
+      placeholder.style.display = 'none';
+      img.style.display = 'block';
+    });
+    // Si l'image échoue, afficher le placeholder
+    img.addEventListener('error', function() {
+      img.style.display = 'none';
+      placeholder.style.display = 'flex';
+    });
+    // Si déjà chargée (cache)
+    if (img.complete && img.naturalWidth > 0) {
+      placeholder.style.display = 'none';
+      img.style.display = 'block';
+    } else if (img.complete) {
+      img.style.display = 'none';
+      placeholder.style.display = 'flex';
+    }
+  }
+})();
+
+// ═══════════════════════════════
+// PARTICULES DORÉES
+// ═══════════════════════════════
+const canvas = document.getElementById('particles-canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+const particles = [];
+for (let i = 0; i < 60; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 2 + 0.5,
+    vx: (Math.random() - 0.5) * 0.3,
+    vy: -Math.random() * 0.5 - 0.2,
+    alpha: Math.random() * 0.5 + 0.1,
+    life: Math.random()
+  });
+}
+
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.life += 0.003;
+    if (p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
+    if (p.x < -10 || p.x > canvas.width + 10) { p.x = Math.random() * canvas.width; }
+    const alpha = Math.sin(p.life * Math.PI) * p.alpha;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(201,168,76,${alpha})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// ═══════════════════════════════
+// ENVELOPPE
+// ═══════════════════════════════
+let envelopeOpened = false;
+function openEnvelope() {
+  if (envelopeOpened) return;
+  envelopeOpened = true;
+  const el = document.getElementById('envelopeEl');
+  el.classList.add('open');
+  setTimeout(() => {
+    document.getElementById('envelope-overlay').classList.add('hide');
+    const main = document.getElementById('main-page');
+    main.classList.add('visible');
+    document.getElementById('audio-ctrl').classList.add('visible');
+    setTimeout(revealElements, 400);
+    // Lancer la musique automatiquement
+    startMusic();
+  }, 1800);
+}
+
+// ═══════════════════════════════
+// REVEAL SCROLL
+// ═══════════════════════════════
+function revealElements() {
+  const els = document.querySelectorAll('.reveal');
+  els.forEach((el, i) => {
+    setTimeout(() => el.classList.add('in'), i * 120);
+  });
+}
+
+// ═══════════════════════════════
+// MODAL
+// ═══════════════════════════════
+function openModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  setTimeout(() => {
+    document.getElementById('formView').style.display = '';
+    document.getElementById('confirmView').classList.remove('show');
+  }, 400);
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+// ═══════════════════════════════
+// FORMULAIRE
+// ═══════════════════════════════
+let presence = 'oui';
+let accompOn = false;
+let nbAccomp = 1;
+
+function setPresence(val) {
+  presence = val;
+  document.getElementById('pOui').classList.toggle('selected', val === 'oui');
+  document.getElementById('pNon').classList.toggle('selected', val === 'non');
+}
+
+function toggleAccomp() {
+  accompOn = !accompOn;
+  document.getElementById('accompChk').classList.toggle('on', accompOn);
+  document.getElementById('accompBlock').classList.toggle('show', accompOn);
+  if (accompOn) renderAccomp();
+}
+
+function changeNb(d) {
+  nbAccomp = Math.max(1, Math.min(10, nbAccomp + d));
+  document.getElementById('nbDisplay').textContent = nbAccomp;
+  renderAccomp();
+}
+
+function renderAccomp() {
+  const c = document.getElementById('accompItems');
+  const vals = {};
+  c.querySelectorAll('input').forEach(i => vals[i.id] = i.value);
+  c.innerHTML = '';
+  for (let i = 1; i <= nbAccomp; i++) {
+    const d = document.createElement('div');
+    d.className = 'accomp-item';
+    d.innerHTML = `
+      <span class="accomp-num-badge">${i}</span>
+      <input class="form-input" id="ap_${i}" type="text" placeholder="Prénom" value="${vals['ap_'+i]||''}">
+      <input class="form-input" id="an_${i}" type="text" placeholder="Nom" value="${vals['an_'+i]||''}">
+    `;
+    c.appendChild(d);
+  }
+}
+
+async function submitRSVP() {
+  const prenom = document.getElementById('f_prenom').value.trim();
+  const nom = document.getElementById('f_nom').value.trim();
+  if (!prenom || !nom) {
+    alert('Merci de renseigner votre prénom et nom.');
+    return;
+  }
+  const accompagnateurs = [];
+  if (accompOn) {
+    for (let i = 1; i <= nbAccomp; i++) {
+      accompagnateurs.push({
+        prenom: (document.getElementById('ap_'+i)||{value:''}).value.trim(),
+        nom: (document.getElementById('an_'+i)||{value:''}).value.trim(),
+      });
+    }
+  }
+  const payload = {
+    prenom, nom,
+    telephone: document.getElementById('f_tel').value.trim(),
+    email: document.getElementById('f_email').value.trim(),
+    presence,
+    message: document.getElementById('f_msg').value.trim(),
+    accompagnateurs,
+  };
+  try {
+    const res = await fetch('/rsvp/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('formView').style.display = 'none';
+      document.getElementById('confirmView').classList.add('show');
+      if (presence === 'oui') {
+        document.getElementById('confirmTitle').textContent = 'Merci ' + prenom + ' !';
+        let txt = `Votre présence est bien confirmée pour le 23 mai 2026. Nous avons hâte de vous accueillir !`;
+        if (accompOn && accompagnateurs.length) txt += ` Vous serez ${accompagnateurs.length + 1} au total.`;
+        document.getElementById('confirmText').textContent = txt;
+      } else {
+        document.getElementById('confirmTitle').textContent = 'Message bien reçu';
+        document.getElementById('confirmText').textContent =
+          `Merci ${prenom} de nous avoir fait part de votre réponse. Vous serez avec nous en pensée lors de cette belle journée.`;
+      }
+    } else {
+      alert('Erreur : ' + (data.error || 'Réessayez'));
+    }
+  } catch(e) {
+    alert('Erreur de connexion. Veuillez réessayer.');
+  }
+}
+
+function getCookie(name) {
+  const v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return v ? v[2] : '';
+}
+
+// ═══════════════════════════════
+// AUDIO — autoplay en boucle
+// ═══════════════════════════════
+const audio = document.getElementById('bgMusic');
+let audioPlaying = false;
+
+function startMusic() {
+  audio.volume = 0.3;
+  // Tentative de lecture automatique
+  const playPromise = audio.play();
+  if (playPromise !== undefined) {
+    playPromise
+      .then(() => {
+        audioPlaying = true;
+        updateAudioBtn();
+      })
+      .catch(() => {
+        // Autoplay bloqué par le navigateur — attendre un clic utilisateur
+        audioPlaying = false;
+        updateAudioBtn();
+        // Essayer de rejouer au premier clic n'importe où
+        document.addEventListener('click', function resumeOnClick() {
+          if (!audioPlaying) {
+            audio.play().then(() => {
+              audioPlaying = true;
+              updateAudioBtn();
+            }).catch(() => {});
+          }
+          document.removeEventListener('click', resumeOnClick);
+        }, { once: true });
+      });
+  }
+}
+
+function toggleAudio() {
+  if (audioPlaying) {
+    audio.pause();
+    audioPlaying = false;
+  } else {
+    audio.play().then(() => { audioPlaying = true; }).catch(() => {});
+    audioPlaying = true;
+  }
+  updateAudioBtn();
+}
+
+function updateAudioBtn() {
+  const btn = document.getElementById('audioBtn');
+  if (audioPlaying) {
+    // Icône pause
+    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <rect x="2" y="3" width="5" height="12" rx="1" fill="white"/>
+      <rect x="11" y="3" width="5" height="12" rx="1" fill="white"/>
+    </svg>`;
+  } else {
+    // Icône play
+    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <polygon points="3,2 15,9 3,16" fill="white"/>
+    </svg>`;
+  }
+}
+</script>
+
+</body>
+</html>
