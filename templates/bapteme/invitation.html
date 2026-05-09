@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#1a0f05">
-<title>Baptême & Première Communion - PARE Annie Charlen</title>
+<title>Baptême & Première Communion - Pare Annie Charlen</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600&family=Lato:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* ════════════════════════════════════════════
@@ -605,7 +605,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
         <text x="240" y="79"
               font-family="Cormorant Garamond, Georgia, serif"
               font-size="16" font-style="italic" font-weight="400"
-              fill="#a07820" text-anchor="middle">PARE Annie Charlen</text>
+              fill="#a07820" text-anchor="middle">Pare Annie Charlen</text>
         <!-- Petite croix -->
         <rect x="237" y="157" width="4"  height="20" rx="1.5" fill="#c9a84c" opacity="0.6"/>
         <rect x="229" y="164" width="20" height="4"  rx="1.5" fill="#c9a84c" opacity="0.6"/>
@@ -882,6 +882,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
         </div>
       </div>
 
+      <div id="accompSection">
       <div class="accomp-toggle" onclick="toggleAccomp()">
         <div class="checkbox-box" id="accompChk">
           <svg width="12" height="12" viewBox="0 0 10 10" fill="none">
@@ -900,6 +901,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
         </div>
         <div class="accomp-list-items" id="accompItems"></div>
       </div>
+      </div><!-- end accompSection -->
 
       <div class="form-row single">
         <div class="form-group">
@@ -1009,7 +1011,7 @@ function closeModal() {
     document.getElementById('confirmView').classList.remove('show');
   }, 400);
 }
-function closeModalOutside(e){ if(e.target===document.getElementById('modal-overlay')) closeModal(); }
+function closeModalOutside(e){ /* Désactivé - fermeture uniquement via le bouton ✕ */ }
 
 /* ── Formulaire ── */
 let presence='oui', accompOn=false, nbAccomp=1;
@@ -1018,6 +1020,17 @@ function setPresence(v){
   presence=v;
   document.getElementById('pOui').classList.toggle('selected', v==='oui');
   document.getElementById('pNon').classList.toggle('selected', v==='non');
+  // Masquer toute la section accompagnateur si "non"
+  const accompSection = document.getElementById('accompSection');
+  if(v==='non'){
+    accompSection.style.display='none';
+    // Réinitialiser l'état accompagnateur
+    accompOn=false;
+    document.getElementById('accompChk').classList.remove('on');
+    document.getElementById('accompBlock').classList.remove('show');
+  } else {
+    accompSection.style.display='';
+  }
 }
 function toggleAccomp(){
   accompOn=!accompOn;
