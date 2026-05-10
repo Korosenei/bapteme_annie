@@ -5,214 +5,1141 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard — Baptême Annie Charlen</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background:#f8f5f0; font-family:'Lato',sans-serif; color:#2c1a0e; }
+/* ══════════════════════════════════════
+   RESET & VARIABLES
+══════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
 
+:root {
+  --gold:       #c9a84c;
+  --gold-light: #e8d08a;
+  --gold-dark:  #8c6d24;
+  --cream:      #faf6ef;
+  --parchment:  #f3ead8;
+  --white:      #fffdf8;
+  --brown:      #2c1a0e;
+  --brown-mid:  #5a3e20;
+  --green:      #2e7d32;
+  --green-bg:   #e8f5e9;
+  --red:        #c62828;
+  --red-bg:     #fce4ec;
+  --blue:       #1a3f72;
+  --blue-bg:    #e3edf7;
+  --border:     rgba(201,168,76,0.18);
+  --shadow:     0 2px 16px rgba(44,26,14,0.08);
+  --radius:     6px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--cream);
+  font-family: 'Lato', sans-serif;
+  color: var(--brown);
+  min-height: 100vh;
+}
+
+/* ══════════════════════════════════════
+   TOPBAR
+══════════════════════════════════════ */
 .topbar {
-  background: linear-gradient(135deg, #8c6d24, #c9a84c, #8c6d24);
-  padding: 1.25rem 2rem;
+  background: linear-gradient(135deg, #6b4c14 0%, #c9a84c 40%, #e8d08a 60%, #c9a84c 80%, #6b4c14 100%);
+  padding: 0 2rem;
+  height: 62px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 4px 20px rgba(140,109,36,0.3);
+  box-shadow: 0 3px 20px rgba(140,109,36,0.35);
+  position: sticky; top: 0; z-index: 100;
 }
-
+.topbar-left { display: flex; align-items: center; gap: 1rem; }
+.topbar-icon { font-size: 20px; opacity: 0.9; }
 .topbar-title {
   font-family: 'Cinzel', serif;
-  font-size: 14px;
-  letter-spacing: 3px;
-  color: #fff;
+  font-size: 13px; letter-spacing: 3px;
+  color: #fff; font-weight: 600;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.25);
 }
-
+.topbar-right { display: flex; align-items: center; gap: 1.5rem; }
 .topbar-date {
-  font-size: 12px;
-  color: rgba(255,253,240,0.7);
+  font-size: 12px; color: rgba(255,253,240,0.82);
   letter-spacing: 1px;
 }
+.topbar-back {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: rgba(255,253,240,0.15);
+  border: 1px solid rgba(255,253,240,0.3);
+  color: #fff; padding: 0.4rem 0.9rem;
+  border-radius: 20px; font-size: 12px;
+  text-decoration: none; letter-spacing: 1px;
+  transition: background 0.2s;
+}
+.topbar-back:hover { background: rgba(255,253,240,0.25); }
 
+/* ══════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════ */
 .container {
-  max-width: 1100px;
-  margin: 2rem auto;
-  padding: 0 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
 }
 
-.stats-grid {
+/* ══════════════════════════════════════
+   KPI GRID
+══════════════════════════════════════ */
+.kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
   margin-bottom: 2rem;
 }
-
-.stat-card {
-  background: #fff;
-  border-radius: 4px;
-  padding: 1.5rem;
-  border: 1px solid rgba(201,168,76,0.15);
-  border-top: 3px solid var(--accent, #c9a84c);
-  box-shadow: 0 2px 12px rgba(44,26,14,0.06);
+.kpi-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.35rem 1.25rem;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--kpi-color, var(--gold));
+  box-shadow: var(--shadow);
   text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-
-.stat-num {
+.kpi-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(44,26,14,0.12); }
+.kpi-num {
   font-family: 'Cinzel', serif;
-  font-size: 2.5rem;
-  font-weight: 600;
-  color: var(--accent, #c9a84c);
-  line-height: 1;
-  margin-bottom: 0.5rem;
+  font-size: 2.2rem; font-weight: 700;
+  color: var(--kpi-color, var(--gold));
+  line-height: 1; margin-bottom: 0.4rem;
+}
+.kpi-label {
+  font-size: 10px; letter-spacing: 2px;
+  color: #8c7a60; text-transform: uppercase; font-weight: 700;
+}
+.kpi-sub {
+  font-size: 11px; color: #a09070; margin-top: 0.25rem;
+  font-style: italic;
 }
 
-.stat-label {
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: #8c7a60;
-  text-transform: uppercase;
+/* ══════════════════════════════════════
+   ONGLETS
+══════════════════════════════════════ */
+.tabs {
+  display: flex; gap: 0; margin-bottom: 0;
+  border-bottom: 2px solid var(--border);
 }
-
-.section-title {
+.tab-btn {
+  padding: 0.75rem 1.5rem;
   font-family: 'Cinzel', serif;
-  font-size: 13px;
-  letter-spacing: 3px;
-  color: #8c6d24;
-  text-transform: uppercase;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(201,168,76,0.2);
+  font-size: 10px; letter-spacing: 2px;
+  color: #8c7a60; text-transform: uppercase;
+  background: transparent; border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px; cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.tab-btn:hover { color: var(--gold-dark); }
+.tab-btn.active { color: var(--gold-dark); border-bottom-color: var(--gold); font-weight: 600; }
+.tab-badge {
+  background: var(--gold); color: #fff;
+  border-radius: 10px; padding: 1px 7px;
+  font-size: 9px; font-family: 'Lato', sans-serif;
+  font-weight: 700; letter-spacing: 0;
 }
 
+/* ══════════════════════════════════════
+   PANELS
+══════════════════════════════════════ */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ══════════════════════════════════════
+   BARRE DE FILTRES
+══════════════════════════════════════ */
+.filter-bar {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 1rem 1.25rem;
+  display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow);
+}
+.filter-group { display: flex; align-items: center; gap: 0.5rem; }
+.filter-label {
+  font-family: 'Cinzel', serif; font-size: 9px;
+  letter-spacing: 2px; color: var(--gold-dark);
+  text-transform: uppercase; font-weight: 600; white-space: nowrap;
+}
+.filter-select, .filter-input {
+  border: 1px solid rgba(201,168,76,0.35);
+  border-radius: 4px; padding: 0.42rem 0.75rem;
+  font-family: 'Lato', sans-serif; font-size: 13px;
+  color: var(--brown); background: #fff;
+  outline: none; transition: border-color 0.2s;
+}
+.filter-select:focus, .filter-input:focus { border-color: var(--gold); }
+.filter-input { width: 200px; }
+.filter-reset {
+  margin-left: auto;
+  background: transparent; border: 1px solid rgba(201,168,76,0.35);
+  color: var(--gold-dark); padding: 0.42rem 0.85rem;
+  border-radius: 4px; font-size: 12px; cursor: pointer;
+  letter-spacing: 1px; transition: all 0.2s;
+}
+.filter-reset:hover { background: var(--parchment); }
+
+/* ══════════════════════════════════════
+   TABLE INVITÉS
+══════════════════════════════════════ */
 .table-wrap {
-  background: #fff;
-  border-radius: 4px;
-  border: 1px solid rgba(201,168,76,0.15);
-  box-shadow: 0 2px 12px rgba(44,26,14,0.06);
-  overflow: auto;
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow-x: auto;
 }
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
 thead th {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: #8c6d24;
-  text-transform: uppercase;
-  padding: 0.85rem 1rem;
-  text-align: left;
-  background: #fdf8f0;
-  border-bottom: 1px solid rgba(201,168,76,0.2);
+  font-family: 'Cinzel', serif; font-size: 9px;
+  letter-spacing: 2px; color: var(--gold-dark);
+  text-transform: uppercase; padding: 0.9rem 1rem;
+  text-align: left; background: var(--parchment);
+  border-bottom: 1px solid rgba(201,168,76,0.22);
+  white-space: nowrap;
 }
+thead th.sortable { cursor: pointer; user-select: none; }
+thead th.sortable:hover { color: var(--brown); }
+thead th .sort-icon { margin-left: 4px; opacity: 0.4; font-size: 10px; }
+thead th.sorted .sort-icon { opacity: 1; color: var(--gold); }
 
 tbody td {
-  padding: 0.85rem 1rem;
+  padding: 0.82rem 1rem;
   border-bottom: 1px solid rgba(201,168,76,0.08);
-  color: #2c1a0e;
+  color: var(--brown); vertical-align: middle;
 }
-
 tbody tr:last-child td { border-bottom: none; }
-tbody tr:hover { background: #fdf8f0; }
+tbody tr:hover { background: #fdf9f2; }
+tbody tr.hidden-row { display: none; }
+
+.td-name strong { font-weight: 700; display: block; color: var(--brown); }
+.td-name span { font-size: 12px; color: #8c7a60; }
 
 .badge {
-  display: inline-block;
-  padding: 0.2rem 0.6rem;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 0.22rem 0.65rem; border-radius: 20px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
 }
+.badge-oui { background: var(--green-bg); color: var(--green); }
+.badge-non { background: var(--red-bg);   color: var(--red);   }
 
-.badge-oui { background: #e8f5e9; color: #2e7d32; }
-.badge-non { background: #fce4ec; color: #c62828; }
+.accomp-list { font-size: 12px; color: #6b4f14; line-height: 1.5; }
 
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #8c6d24;
-  text-decoration: none;
-  font-size: 13px;
-  margin-bottom: 1.5rem;
-  letter-spacing: 1px;
+.td-actions { white-space: nowrap; }
+.btn-action {
+  padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 11px;
+  border: 1px solid var(--border); background: var(--white);
+  cursor: pointer; color: var(--gold-dark);
+  transition: all 0.15s; margin-right: 3px;
 }
-.back-link:hover { text-decoration: underline; }
+.btn-action:hover { background: var(--parchment); border-color: var(--gold); }
+.btn-action.danger:hover { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+
+.empty-state {
+  text-align: center; padding: 3rem 1rem;
+  color: #a09070; font-style: italic;
+}
+.empty-state svg { opacity: 0.3; margin-bottom: 0.75rem; display: block; margin-inline: auto; }
+
+/* ══════════════════════════════════════
+   SECTION CADEAUX
+══════════════════════════════════════ */
+.gifts-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 1.25rem;
+  align-items: start;
+}
+@media (max-width: 900px) { .gifts-layout { grid-template-columns: 1fr; } }
+
+/* ── Formulaire ajout cadeau ── */
+.gift-form-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  position: sticky; top: 78px;
+}
+.gift-form-header {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  padding: 1rem 1.25rem;
+}
+.gift-form-title {
+  font-family: 'Cinzel', serif; font-size: 11px;
+  letter-spacing: 3px; color: #fff;
+  text-transform: uppercase; font-weight: 600;
+}
+.gift-form-body { padding: 1.25rem; }
+
+.fgroup { margin-bottom: 0.85rem; }
+.flabel {
+  display: block;
+  font-family: 'Cinzel', serif; font-size: 9px;
+  letter-spacing: 2px; color: var(--gold-dark);
+  text-transform: uppercase; font-weight: 600;
+  margin-bottom: 0.32rem;
+}
+.finput, .fselect, .ftextarea {
+  width: 100%;
+  border: 1.5px solid rgba(201,168,76,0.35);
+  border-radius: 5px; padding: 0.65rem 0.85rem;
+  font-family: 'Lato', sans-serif; font-size: 14px;
+  color: var(--brown); background: #fff;
+  outline: none; transition: border-color 0.2s;
+}
+.finput:focus, .fselect:focus, .ftextarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.12); }
+.ftextarea { resize: vertical; min-height: 65px; }
+
+/* Type cadeau toggle */
+.type-toggle { display: flex; gap: 0.5rem; margin-bottom: 0.85rem; }
+.type-opt {
+  flex: 1; padding: 0.6rem 0.5rem;
+  border: 1.5px solid rgba(201,168,76,0.3);
+  border-radius: 5px; text-align: center;
+  cursor: pointer; transition: all 0.2s;
+  font-size: 12px; font-weight: 700;
+  color: #8c7a60;
+}
+.type-opt.active { border-color: var(--gold); background: #fef6d8; color: var(--gold-dark); }
+.type-opt:hover { border-color: var(--gold-dark); }
+
+.montant-row { display: none; }
+.montant-row.show { display: block; }
+
+.btn-add-gift {
+  width: 100%; padding: 0.85rem;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  color: #fff; border: none; border-radius: 5px;
+  font-family: 'Cinzel', serif; font-size: 10px;
+  letter-spacing: 3px; cursor: pointer;
+  text-transform: uppercase; font-weight: 600;
+  box-shadow: 0 4px 14px rgba(140,109,36,0.3);
+  transition: all 0.2s; margin-top: 0.5rem;
+}
+.btn-add-gift:hover { transform: translateY(-1px); box-shadow: 0 7px 20px rgba(140,109,36,0.38); }
+.btn-add-gift:active { transform: scale(0.98); }
+
+/* ── Table cadeaux ── */
+.gift-summary-bar {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 1rem 1.25rem;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.75rem;
+}
+.gift-summary-label {
+  font-family: 'Cinzel', serif; font-size: 11px;
+  letter-spacing: 2px; color: rgba(255,253,240,0.85);
+  text-transform: uppercase;
+}
+.gift-summary-total {
+  font-family: 'Cinzel', serif; font-size: 1.6rem;
+  font-weight: 700; color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.gift-summary-sub { font-size: 12px; color: rgba(255,253,240,0.7); }
+
+.gift-filter-bar {
+  background: var(--parchment); padding: 0.75rem 1.25rem;
+  display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+}
+.gift-filter-btn {
+  padding: 0.3rem 0.85rem; border-radius: 20px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+  border: 1.5px solid var(--border); background: #fff;
+  cursor: pointer; color: #8c7a60; transition: all 0.2s;
+}
+.gift-filter-btn.active { border-color: var(--gold); background: #fef6d8; color: var(--gold-dark); }
+
+.gift-table-wrap { background: var(--white); border-radius: 0 0 var(--radius) var(--radius); border: 1px solid var(--border); border-top: none; overflow-x: auto; }
+
+.gift-tag {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 0.2rem 0.6rem; border-radius: 20px;
+  font-size: 11px; font-weight: 700;
+}
+.gift-tag-argent { background: #e8f5e9; color: #2e7d32; }
+.gift-tag-cadeau { background: var(--blue-bg); color: var(--blue); }
+.gift-tag-autre  { background: #fff3e0; color: #e65100; }
+
+/* ══════════════════════════════════════
+   MESSAGES TOAST
+══════════════════════════════════════ */
+.toast-area { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999; display: flex; flex-direction: column; gap: 0.5rem; }
+.toast {
+  background: var(--brown); color: #fff;
+  padding: 0.75rem 1.2rem; border-radius: 6px;
+  font-size: 13px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  animation: toastIn 0.35s ease;
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.toast.success { background: var(--green); }
+.toast.error   { background: var(--red); }
+@keyframes toastIn { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+
+/* ══════════════════════════════════════
+   MODAL DÉTAIL INVITÉ
+══════════════════════════════════════ */
+#detail-modal {
+  position: fixed; inset: 0;
+  background: rgba(20,10,3,0.75); backdrop-filter: blur(3px);
+  z-index: 500; display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+#detail-modal.open { opacity: 1; pointer-events: all; }
+.detail-modal-card {
+  background: var(--white); border-radius: 8px;
+  width: 100%; max-width: 520px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  transform: translateY(20px) scale(0.97);
+  transition: transform 0.35s cubic-bezier(0.34,1.2,0.64,1);
+  overflow: hidden;
+}
+#detail-modal.open .detail-modal-card { transform: translateY(0) scale(1); }
+.dmc-header {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
+}
+.dmc-title { font-family:'Cinzel',serif; font-size:12px; letter-spacing:3px; color:#fff; font-weight:600; }
+.dmc-close {
+  width:30px; height:30px; border-radius:50%;
+  border:1px solid rgba(255,253,240,0.4); background:transparent;
+  color:#fff; cursor:pointer; font-size:14px;
+  display:flex; align-items:center; justify-content:center;
+}
+.dmc-body { padding:1.5rem; }
+.dmc-row { display:flex; justify-content:space-between; padding:0.55rem 0; border-bottom:1px solid var(--border); font-size:14px; }
+.dmc-row:last-child { border-bottom:none; }
+.dmc-key { color:#8c7a60; font-weight:700; font-size:12px; letter-spacing:0.5px; }
+.dmc-val { color:var(--brown); font-weight:400; text-align:right; max-width:60%; }
+.dmc-msg { background:var(--parchment); border-radius:4px; padding:0.75rem; font-size:13px; font-style:italic; color:var(--brown-mid); margin-top:0.75rem; line-height:1.6; }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .topbar { padding: 0 1rem; }
+  .topbar-title { font-size: 11px; letter-spacing: 2px; }
+  .topbar-date { display: none; }
+  .container { padding: 1rem 0.75rem 3rem; }
+  .kpi-grid { grid-template-columns: repeat(2,1fr); }
+  .filter-bar { flex-direction: column; align-items: flex-start; }
+  .filter-input { width: 100%; }
+  .filter-reset { margin-left: 0; }
+  .tabs { overflow-x: auto; }
+  .tab-btn { white-space: nowrap; padding: 0.75rem 1rem; }
+}
 </style>
 </head>
 <body>
 
+<!-- ══ TOPBAR ══ -->
 <div class="topbar">
-  <div class="topbar-title">✦ Tableau de bord — Baptême Annie Charlen</div>
-  <div class="topbar-date">23 Mai 2026</div>
+  <div class="topbar-left">
+    <span class="topbar-icon">✦</span>
+    <span class="topbar-title">Tableau de bord — Baptême Annie Charlen</span>
+  </div>
+  <div class="topbar-right">
+    <span class="topbar-date">23 Mai 2026</span>
+    <a href="/" class="topbar-back">← Invitation</a>
+  </div>
 </div>
 
+<!-- ══ CONTAINER ══ -->
 <div class="container">
-  <a href="/" class="back-link">← Voir l'invitation</a>
 
-  <div class="stats-grid">
-    <div class="stat-card" style="--accent:#c9a84c">
-      <div class="stat-num">{{ total_confirmations|add:total_absences }}</div>
-      <div class="stat-label">Réponses reçues</div>
+  <!-- ── KPIs ── -->
+  <div class="kpi-grid">
+    <div class="kpi-card" style="--kpi-color:#c9a84c">
+      <div class="kpi-num" id="kpi-total">{{ total_reponses }}</div>
+      <div class="kpi-label">Réponses reçues</div>
     </div>
-    <div class="stat-card" style="--accent:#4caf50">
-      <div class="stat-num">{{ total_confirmations }}</div>
-      <div class="stat-label">Présent(e)s</div>
+    <div class="kpi-card" style="--kpi-color:#2e7d32">
+      <div class="kpi-num" id="kpi-oui">{{ total_confirmations }}</div>
+      <div class="kpi-label">Présent(e)s</div>
+      <div class="kpi-sub">{{ total_personnes }} pers. au total</div>
     </div>
-    <div class="stat-card" style="--accent:#e57373">
-      <div class="stat-num">{{ total_absences }}</div>
-      <div class="stat-label">Absent(e)s</div>
+    <div class="kpi-card" style="--kpi-color:#c62828">
+      <div class="kpi-num" id="kpi-non">{{ total_absences }}</div>
+      <div class="kpi-label">Absent(e)s</div>
     </div>
-    <div class="stat-card" style="--accent:#2d5a8e">
-      <div class="stat-num">{{ total_personnes }}</div>
-      <div class="stat-label">Personnes au total</div>
+    <div class="kpi-card" style="--kpi-color:#1a3f72">
+      <div class="kpi-num" id="kpi-dons">{{ total_argent|floatformat:0 }}</div>
+      <div class="kpi-label">FCFA reçus</div>
+      <div class="kpi-sub">{{ nb_dons_argent }} don(s) enregistré(s)</div>
+    </div>
+    <div class="kpi-card" style="--kpi-color:#e65100">
+      <div class="kpi-num" id="kpi-cadeaux">{{ nb_cadeaux }}</div>
+      <div class="kpi-label">Cadeaux / dons</div>
+      <div class="kpi-sub">{{ nb_donateurs }} donateur(s)</div>
     </div>
   </div>
 
-  <div class="section-title">Liste des confirmations</div>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Prénom & Nom</th>
-          <th>Téléphone</th>
-          <th>Présence</th>
-          <th>Accompagnateurs</th>
-          <th>Total</th>
-          <th>Date réponse</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for inv in invitations %}
-        <tr>
-          <td>{{ forloop.counter }}</td>
-          <td><strong>{{ inv.prenom }} {{ inv.nom }}</strong></td>
-          <td>{{ inv.telephone|default:"—" }}</td>
-          <td>
-            <span class="badge badge-{{ inv.presence }}">
-              {% if inv.presence == 'oui' %}✓ Présent(e){% else %}✗ Absent(e){% endif %}
-            </span>
-          </td>
-          <td>
-            {% if inv.accompagnateurs.all %}
-              {% for a in inv.accompagnateurs.all %}
-                {{ a.prenom }} {{ a.nom }}{% if not forloop.last %}, {% endif %}
+  <!-- ── ONGLETS ── -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('invites')" id="tab-invites">
+      👥 Invités
+      <span class="tab-badge" id="badge-invites">{{ total_reponses }}</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('cadeaux')" id="tab-cadeaux">
+      🎁 Cadeaux &amp; Dons
+      <span class="tab-badge" id="badge-cadeaux">{{ nb_cadeaux }}</span>
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PANEL INVITÉS
+  ══════════════════════════════════════ -->
+  <div id="panel-invites" class="panel active">
+
+    <!-- Filtres -->
+    <div class="filter-bar">
+      <div class="filter-group">
+        <span class="filter-label">Recherche</span>
+        <input class="filter-input" id="filter-search" type="text" placeholder="Nom, prénom, téléphone…" oninput="applyFilters()">
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Présence</span>
+        <select class="filter-select" id="filter-presence" onchange="applyFilters()">
+          <option value="">Tous</option>
+          <option value="oui">✓ Présent(e)s</option>
+          <option value="non">✗ Absent(e)s</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Accompagnateur</span>
+        <select class="filter-select" id="filter-accomp" onchange="applyFilters()">
+          <option value="">Tous</option>
+          <option value="avec">Avec accompagnateur</option>
+          <option value="sans">Sans accompagnateur</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Trier par</span>
+        <select class="filter-select" id="filter-sort" onchange="applyFilters()">
+          <option value="date_desc">Date ↓ (récent)</option>
+          <option value="date_asc">Date ↑ (ancien)</option>
+          <option value="nom_asc">Nom A→Z</option>
+          <option value="nom_desc">Nom Z→A</option>
+          <option value="total_desc">Personnes ↓</option>
+        </select>
+      </div>
+      <button class="filter-reset" onclick="resetFilters()">✕ Réinitialiser</button>
+    </div>
+
+    <!-- Compteur résultats -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+      <span style="font-size:13px;color:#8c7a60;" id="results-count"></span>
+      <button onclick="exportCSV()" style="font-size:12px;color:var(--gold-dark);background:transparent;border:1px solid var(--border);border-radius:4px;padding:0.32rem 0.75rem;cursor:pointer;letter-spacing:1px;">⬇ Export CSV</button>
+    </div>
+
+    <!-- Table invités -->
+    <div class="table-wrap">
+      <table id="invites-table">
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th class="sortable" data-col="nom" onclick="sortByCol('nom')">Nom &amp; Prénom <span class="sort-icon">⇅</span></th>
+            <th>Téléphone</th>
+            <th>Présence</th>
+            <th>Accompagnateurs</th>
+            <th class="sortable" data-col="total" onclick="sortByCol('total')">Total pers. <span class="sort-icon">⇅</span></th>
+            <th>Message</th>
+            <th class="sortable" data-col="date" onclick="sortByCol('date')">Date réponse <span class="sort-icon">⇅</span></th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="invites-tbody">
+          {% for inv in invitations %}
+          <tr id="row-{{ inv.id }}"
+              data-presence="{{ inv.presence }}"
+              data-accomp="{% if inv.accompagnateurs.all %}avec{% else %}sans{% endif %}"
+              data-nom="{{ inv.nom }} {{ inv.prenom }}"
+              data-total="{{ inv.nb_total }}"
+              data-date="{{ inv.date_reponse|date:'Y-m-d H:i' }}"
+              data-message="{{ inv.message|default:'' }}"
+              data-id="{{ inv.id }}">
+            <td style="color:#a09070;font-size:12px;">{{ forloop.counter }}</td>
+            <td class="td-name">
+              <strong>{{ inv.prenom }} {{ inv.nom }}</strong>
+              {% if inv.email %}<span>{{ inv.email }}</span>{% endif %}
+            </td>
+            <td style="font-size:13px;">{{ inv.telephone|default:"—" }}</td>
+            <td>
+              <span class="badge badge-{{ inv.presence }}">
+                {% if inv.presence == 'oui' %}✓ Présent(e){% else %}✗ Absent(e){% endif %}
+              </span>
+            </td>
+            <td>
+              {% if inv.accompagnateurs.all %}
+                <div class="accomp-list">
+                  {% for a in inv.accompagnateurs.all %}
+                    {{ a.prenom }} {{ a.nom }}{% if not forloop.last %}<br>{% endif %}
+                  {% endfor %}
+                </div>
+              {% else %}
+                <span style="color:#c0b090;font-size:12px;">—</span>
+              {% endif %}
+            </td>
+            <td style="text-align:center;">
+              <span style="font-family:'Cinzel',serif;font-weight:700;font-size:1.1rem;color:var(--gold-dark);">{{ inv.nb_total }}</span>
+            </td>
+            <td>
+              {% if inv.message %}
+                <span title="{{ inv.message }}" style="cursor:help;font-size:18px;">💬</span>
+              {% else %}
+                <span style="color:#c0b090;font-size:12px;">—</span>
+              {% endif %}
+            </td>
+            <td style="font-size:12px;color:#8c7a60;white-space:nowrap;">{{ inv.date_reponse|date:"d/m H:i" }}</td>
+            <td class="td-actions">
+              <button class="btn-action" onclick="showDetail({{ inv.id }})" title="Détail">👁</button>
+              <button class="btn-action danger" onclick="confirmDelete({{ inv.id }}, '{{ inv.prenom }} {{ inv.nom }}')" title="Supprimer">🗑</button>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="9"><div class="empty-state">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="#c9a84c" stroke-width="1.5"/><path d="M16 24h16M24 16v16" stroke="#c9a84c" stroke-width="1.5"/></svg>
+            Aucune réponse reçue pour le moment.
+          </div></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PANEL CADEAUX & DONS
+  ══════════════════════════════════════ -->
+  <div id="panel-cadeaux" class="panel">
+    <div style="margin-top:1.25rem;"></div>
+
+    <div class="gifts-layout">
+
+      <!-- Table des dons/cadeaux -->
+      <div>
+        <!-- Barre de synthèse -->
+        <div class="gift-summary-bar">
+          <div>
+            <div class="gift-summary-label">Total argent reçu</div>
+            <div class="gift-summary-total" id="total-argent-display">{{ total_argent|floatformat:0 }} FCFA</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="gift-summary-label">Cadeaux enregistrés</div>
+            <div class="gift-summary-total" id="nb-cadeaux-display">{{ nb_cadeaux }}</div>
+            <div class="gift-summary-sub" id="nb-donateurs-display">{{ nb_donateurs }} donateur(s)</div>
+          </div>
+        </div>
+
+        <!-- Filtres cadeaux -->
+        <div class="gift-filter-bar">
+          <span style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:var(--gold-dark);font-weight:600;">FILTRE</span>
+          <button class="gift-filter-btn active" onclick="filterGifts('all',this)">Tous</button>
+          <button class="gift-filter-btn" onclick="filterGifts('argent',this)">💵 Argent</button>
+          <button class="gift-filter-btn" onclick="filterGifts('cadeau',this)">🎁 Cadeau</button>
+          <button class="gift-filter-btn" onclick="filterGifts('autre',this)">✦ Autre</button>
+        </div>
+
+        <!-- Table dons -->
+        <div class="gift-table-wrap">
+          <table id="gifts-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Donateur</th>
+                <th>Type</th>
+                <th>Description / Montant</th>
+                <th>Invité lié</th>
+                <th style="text-align:right;">Date</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="gifts-tbody">
+              {% for don in dons %}
+              <tr id="don-row-{{ don.id }}" data-type="{{ don.type_don }}">
+                <td style="color:#a09070;font-size:12px;">{{ forloop.counter }}</td>
+                <td>
+                  <strong style="font-size:14px;">{{ don.donateur_nom }}</strong>
+                  {% if don.donateur_tel %}<br><span style="font-size:11px;color:#8c7a60;">{{ don.donateur_tel }}</span>{% endif %}
+                </td>
+                <td>
+                  <span class="gift-tag gift-tag-{{ don.type_don }}">
+                    {% if don.type_don == 'argent' %}💵 Argent
+                    {% elif don.type_don == 'cadeau' %}🎁 Cadeau
+                    {% else %}✦ Autre{% endif %}
+                  </span>
+                </td>
+                <td>
+                  {% if don.type_don == 'argent' %}
+                    <span style="font-family:'Cinzel',serif;font-weight:700;color:var(--green);font-size:1rem;">{{ don.montant|floatformat:0 }} FCFA</span>
+                  {% else %}
+                    <span style="font-size:13px;">{{ don.description|default:"—" }}</span>
+                  {% endif %}
+                  {% if don.note %}<br><span style="font-size:11px;color:#8c7a60;font-style:italic;">{{ don.note }}</span>{% endif %}
+                </td>
+                <td style="font-size:13px;">
+                  {% if don.invitation %}
+                    {{ don.invitation.prenom }} {{ don.invitation.nom }}
+                  {% else %}
+                    <span style="color:#c0b090;">—</span>
+                  {% endif %}
+                </td>
+                <td style="font-size:11px;color:#8c7a60;text-align:right;white-space:nowrap;">{{ don.date_enregistrement|date:"d/m H:i" }}</td>
+                <td>
+                  <button class="btn-action danger" onclick="deleteDon({{ don.id }})" title="Supprimer">🗑</button>
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="7"><div class="empty-state">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect x="8" y="16" width="32" height="24" rx="3" stroke="#c9a84c" stroke-width="1.5"/><path d="M24 8 L24 40M8 24h32" stroke="#c9a84c" stroke-width="1.5"/></svg>
+                Aucun don/cadeau enregistré. Utilisez le formulaire →
+              </div></td></tr>
               {% endfor %}
-            {% else %}—{% endif %}
-          </td>
-          <td><strong>{{ inv.nb_total }}</strong></td>
-          <td style="font-size:12px; color:#8c7a60;">{{ inv.date_reponse|date:"d/m/Y H:i" }}</td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="7" style="text-align:center; padding:2rem; color:#8c7a60; font-style:italic;">Aucune réponse reçue pour le moment.</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Formulaire ajout don -->
+      <div class="gift-form-card">
+        <div class="gift-form-header">
+          <div class="gift-form-title">➕ Enregistrer un don</div>
+        </div>
+        <div class="gift-form-body">
+          <div class="fgroup">
+            <label class="flabel">Nom du donateur *</label>
+            <input class="finput" id="g-nom" type="text" placeholder="Prénom Nom">
+          </div>
+          <div class="fgroup">
+            <label class="flabel">Téléphone</label>
+            <input class="finput" id="g-tel" type="tel" placeholder="+226 ...">
+          </div>
+
+          <div class="fgroup">
+            <label class="flabel">Type de don</label>
+            <div class="type-toggle">
+              <div class="type-opt active" onclick="setGiftType('argent',this)" id="gtype-argent">💵 Argent</div>
+              <div class="type-opt" onclick="setGiftType('cadeau',this)" id="gtype-cadeau">🎁 Cadeau</div>
+              <div class="type-opt" onclick="setGiftType('autre',this)" id="gtype-autre">✦ Autre</div>
+            </div>
+            <input type="hidden" id="g-type" value="argent">
+          </div>
+
+          <div class="fgroup montant-row show" id="montant-row">
+            <label class="flabel">Montant (FCFA) *</label>
+            <input class="finput" id="g-montant" type="number" min="0" placeholder="ex: 5000">
+          </div>
+
+          <div class="fgroup" id="desc-row">
+            <label class="flabel" id="desc-label">Description du cadeau *</label>
+            <input class="finput" id="g-desc" type="text" placeholder="ex: Robe baptême, couverture…">
+          </div>
+
+          <div class="fgroup">
+            <label class="flabel">Lier à un invité (optionnel)</label>
+            <select class="fselect" id="g-inviteid">
+              <option value="">— Invité non lié —</option>
+              {% for inv in invitations %}
+              {% if inv.presence == 'oui' %}
+              <option value="{{ inv.id }}">{{ inv.prenom }} {{ inv.nom }}</option>
+              {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="fgroup">
+            <label class="flabel">Note / Remarque</label>
+            <textarea class="ftextarea" id="g-note" placeholder="Note interne (facultatif)…"></textarea>
+          </div>
+
+          <button class="btn-add-gift" onclick="submitDon()">✦ Enregistrer</button>
+        </div>
+      </div>
+
+    </div><!-- end gifts-layout -->
+  </div><!-- end panel-cadeaux -->
+
+</div><!-- end container -->
+
+<!-- ══ MODAL DÉTAIL ══ -->
+<div id="detail-modal">
+  <div class="detail-modal-card">
+    <div class="dmc-header">
+      <span class="dmc-title">Détail de la réponse</span>
+      <button class="dmc-close" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="dmc-body" id="detail-content"></div>
   </div>
 </div>
 
+<!-- ══ TOASTS ══ -->
+<div class="toast-area" id="toast-area"></div>
+
+<!-- ══ DATA JSON pour JS ══ -->
+<script>
+// Données injectées depuis Django
+const INVITATIONS_DATA = [
+  {% for inv in invitations %}
+  {
+    id: {{ inv.id }},
+    prenom: "{{ inv.prenom|escapejs }}",
+    nom: "{{ inv.nom|escapejs }}",
+    email: "{{ inv.email|default:''|escapejs }}",
+    telephone: "{{ inv.telephone|default:''|escapejs }}",
+    presence: "{{ inv.presence }}",
+    message: "{{ inv.message|default:''|escapejs }}",
+    date: "{{ inv.date_reponse|date:'Y-m-d H:i' }}",
+    total: {{ inv.nb_total }},
+    accompagnateurs: [{% for a in inv.accompagnateurs.all %}"{{ a.prenom|escapejs }} {{ a.nom|escapejs }}"{% if not forloop.last %},{% endif %}{% endfor %}]
+  }{% if not forloop.last %},{% endif %}
+  {% endfor %}
+];
+
+const CSRF = "{{ csrf_token }}";
+</script>
+
+<script>
+/* ══════════════════════════════════════
+   ONGLETS
+══════════════════════════════════════ */
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+/* ══════════════════════════════════════
+   FILTRES INVITÉS
+══════════════════════════════════════ */
+function applyFilters() {
+  const search   = document.getElementById('filter-search').value.toLowerCase().trim();
+  const presence = document.getElementById('filter-presence').value;
+  const accomp   = document.getElementById('filter-accomp').value;
+  const sort     = document.getElementById('filter-sort').value;
+
+  const tbody = document.getElementById('invites-tbody');
+  const rows  = Array.from(tbody.querySelectorAll('tr[data-id]'));
+  let visible = 0;
+
+  rows.forEach(row => {
+    const nom      = (row.dataset.nom || '').toLowerCase();
+    const tel      = (row.querySelector('td:nth-child(3)')?.textContent || '').toLowerCase();
+    const presVal  = row.dataset.presence;
+    const accompVal= row.dataset.accomp;
+
+    const matchSearch  = !search   || nom.includes(search) || tel.includes(search);
+    const matchPresence= !presence || presVal === presence;
+    const matchAccomp  = !accomp   || accompVal === accomp;
+
+    if (matchSearch && matchPresence && matchAccomp) {
+      row.classList.remove('hidden-row');
+      visible++;
+    } else {
+      row.classList.add('hidden-row');
+    }
+  });
+
+  // Tri
+  const visibleRows = rows.filter(r => !r.classList.contains('hidden-row'));
+  visibleRows.sort((a, b) => {
+    switch(sort) {
+      case 'nom_asc':    return a.dataset.nom.localeCompare(b.dataset.nom);
+      case 'nom_desc':   return b.dataset.nom.localeCompare(a.dataset.nom);
+      case 'total_desc': return parseInt(b.dataset.total) - parseInt(a.dataset.total);
+      case 'date_asc':   return a.dataset.date.localeCompare(b.dataset.date);
+      default:           return b.dataset.date.localeCompare(a.dataset.date);
+    }
+  });
+  visibleRows.forEach(r => tbody.appendChild(r));
+
+  // Renuméroter
+  let n = 1;
+  tbody.querySelectorAll('tr[data-id]:not(.hidden-row) td:first-child').forEach(td => td.textContent = n++);
+
+  document.getElementById('results-count').textContent = `${visible} résultat(s) affiché(s)`;
+}
+
+function resetFilters() {
+  document.getElementById('filter-search').value   = '';
+  document.getElementById('filter-presence').value = '';
+  document.getElementById('filter-accomp').value   = '';
+  document.getElementById('filter-sort').value     = 'date_desc';
+  applyFilters();
+}
+
+function sortByCol(col) {
+  const sel = document.getElementById('filter-sort');
+  const cur = sel.value;
+  if      (col === 'nom')   sel.value = cur === 'nom_asc' ? 'nom_desc' : 'nom_asc';
+  else if (col === 'total') sel.value = 'total_desc';
+  else if (col === 'date')  sel.value = cur === 'date_asc' ? 'date_desc' : 'date_asc';
+  applyFilters();
+  document.querySelectorAll('thead th').forEach(th => th.classList.remove('sorted'));
+  document.querySelector(`thead th[data-col="${col}"]`)?.classList.add('sorted');
+}
+
+// Init compteur
+window.addEventListener('DOMContentLoaded', () => { applyFilters(); });
+
+/* ══════════════════════════════════════
+   EXPORT CSV
+══════════════════════════════════════ */
+function exportCSV() {
+  const rows = INVITATIONS_DATA;
+  const header = ['Prénom','Nom','Téléphone','Email','Présence','Accompagnateurs','Total personnes','Message','Date réponse'];
+  const lines = rows.map(r => [
+    r.prenom, r.nom, r.telephone, r.email,
+    r.presence === 'oui' ? 'Présent(e)' : 'Absent(e)',
+    r.accompagnateurs.join(' / '),
+    r.total,
+    r.message,
+    r.date
+  ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(';'));
+  const csv = [header.join(';'), ...lines].join('\n');
+  const blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'invites_bapteme_annie.csv';
+  a.click(); URL.revokeObjectURL(url);
+  showToast('Export CSV téléchargé', 'success');
+}
+
+/* ══════════════════════════════════════
+   MODAL DÉTAIL
+══════════════════════════════════════ */
+function showDetail(id) {
+  const inv = INVITATIONS_DATA.find(i => i.id === id);
+  if (!inv) return;
+  const accompTxt = inv.accompagnateurs.length ? inv.accompagnateurs.join(', ') : '—';
+  document.getElementById('detail-content').innerHTML = `
+    <div class="dmc-row"><span class="dmc-key">Prénom &amp; Nom</span><span class="dmc-val">${inv.prenom} ${inv.nom}</span></div>
+    <div class="dmc-row"><span class="dmc-key">Téléphone</span><span class="dmc-val">${inv.telephone || '—'}</span></div>
+    <div class="dmc-row"><span class="dmc-key">Email</span><span class="dmc-val">${inv.email || '—'}</span></div>
+    <div class="dmc-row"><span class="dmc-key">Présence</span><span class="dmc-val">${inv.presence === 'oui' ? '✓ Présent(e)' : '✗ Absent(e)'}</span></div>
+    <div class="dmc-row"><span class="dmc-key">Accompagnateurs</span><span class="dmc-val">${accompTxt}</span></div>
+    <div class="dmc-row"><span class="dmc-key">Total personnes</span><span class="dmc-val">${inv.total}</span></div>
+    <div class="dmc-row"><span class="dmc-key">Date réponse</span><span class="dmc-val">${inv.date}</span></div>
+    ${inv.message ? `<div class="dmc-msg">💬 ${inv.message}</div>` : ''}
+  `;
+  document.getElementById('detail-modal').classList.add('open');
+}
+function closeDetail() { document.getElementById('detail-modal').classList.remove('open'); }
+document.getElementById('detail-modal').addEventListener('click', function(e){ if(e.target===this) closeDetail(); });
+
+/* ══════════════════════════════════════
+   SUPPRIMER INVITÉ
+══════════════════════════════════════ */
+function confirmDelete(id, name) {
+  if (!confirm(`Supprimer la réponse de ${name} ? Cette action est irréversible.`)) return;
+  fetch(`/invitations/${id}/delete/`, {
+    method: 'POST',
+    headers: { 'X-CSRFToken': CSRF, 'Content-Type': 'application/json' }
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      document.getElementById('row-' + id)?.remove();
+      showToast(`Réponse de ${name} supprimée`, 'success');
+      updateKPIs();
+    } else { showToast('Erreur lors de la suppression', 'error'); }
+  })
+  .catch(() => showToast('Erreur réseau', 'error'));
+}
+
+/* ══════════════════════════════════════
+   TYPE DE DON — toggle formulaire
+══════════════════════════════════════ */
+let currentGiftType = 'argent';
+function setGiftType(type, el) {
+  currentGiftType = type;
+  document.getElementById('g-type').value = type;
+  document.querySelectorAll('.type-opt').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+
+  const montantRow = document.getElementById('montant-row');
+  const descRow    = document.getElementById('desc-row');
+  const descLabel  = document.getElementById('desc-label');
+
+  if (type === 'argent') {
+    montantRow.classList.add('show');
+    descRow.style.display = 'none';
+  } else if (type === 'cadeau') {
+    montantRow.classList.remove('show');
+    descRow.style.display = '';
+    descLabel.textContent = 'Description du cadeau *';
+    document.getElementById('g-desc').placeholder = 'ex: Robe baptême, biberon en argent…';
+  } else {
+    montantRow.classList.remove('show');
+    descRow.style.display = '';
+    descLabel.textContent = 'Description *';
+    document.getElementById('g-desc').placeholder = 'ex: Parrainage, bénédiction spéciale…';
+  }
+}
+// Init : masquer description au départ (type argent)
+window.addEventListener('DOMContentLoaded', () => { document.getElementById('desc-row').style.display = 'none'; });
+
+/* ══════════════════════════════════════
+   SOUMETTRE DON
+══════════════════════════════════════ */
+function submitDon() {
+  const nom     = document.getElementById('g-nom').value.trim();
+  const tel     = document.getElementById('g-tel').value.trim();
+  const type    = document.getElementById('g-type').value;
+  const montant = document.getElementById('g-montant').value.trim();
+  const desc    = document.getElementById('g-desc').value.trim();
+  const invId   = document.getElementById('g-inviteid').value;
+  const note    = document.getElementById('g-note').value.trim();
+
+  if (!nom) { showToast('Veuillez saisir le nom du donateur', 'error'); return; }
+  if (type === 'argent' && (!montant || isNaN(montant) || parseFloat(montant) <= 0)) {
+    showToast('Veuillez saisir un montant valide', 'error'); return;
+  }
+  if ((type === 'cadeau' || type === 'autre') && !desc) {
+    showToast('Veuillez décrire le cadeau / don', 'error'); return;
+  }
+
+  const payload = { donateur_nom: nom, donateur_tel: tel, type_don: type,
+                    montant: type === 'argent' ? parseFloat(montant) : null,
+                    description: desc, invitation_id: invId || null, note: note };
+
+  fetch('/dons/add/', {
+    method: 'POST',
+    headers: { 'X-CSRFToken': CSRF, 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      showToast('Don enregistré avec succès !', 'success');
+      // Ajouter la ligne dans la table sans recharger
+      addGiftRow(data.don);
+      // Réinitialiser formulaire
+      ['g-nom','g-tel','g-montant','g-desc','g-note'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('g-inviteid').value = '';
+      updateKPIs();
+    } else { showToast('Erreur : ' + (data.error || 'Réessayez'), 'error'); }
+  })
+  .catch(() => showToast('Erreur réseau', 'error'));
+}
+
+function addGiftRow(don) {
+  const tbody = document.getElementById('gifts-tbody');
+  // Supprimer l'état "vide" s'il existe
+  const emptyRow = tbody.querySelector('td[colspan]');
+  if (emptyRow) emptyRow.closest('tr').remove();
+
+  const n = tbody.querySelectorAll('tr[id^="don-row-"]').length + 1;
+  const typeLabel = don.type_don === 'argent' ? '💵 Argent' : don.type_don === 'cadeau' ? '🎁 Cadeau' : '✦ Autre';
+  const valCell  = don.type_don === 'argent'
+    ? `<span style="font-family:'Cinzel',serif;font-weight:700;color:var(--green);font-size:1rem;">${parseInt(don.montant).toLocaleString()} FCFA</span>`
+    : `<span style="font-size:13px;">${don.description || '—'}</span>`;
+  const invNom = don.invitation_nom || '—';
+
+  const tr = document.createElement('tr');
+  tr.id = 'don-row-' + don.id;
+  tr.dataset.type = don.type_don;
+  tr.innerHTML = `
+    <td style="color:#a09070;font-size:12px;">${n}</td>
+    <td><strong style="font-size:14px;">${don.donateur_nom}</strong>${don.donateur_tel ? '<br><span style="font-size:11px;color:#8c7a60;">'+don.donateur_tel+'</span>' : ''}</td>
+    <td><span class="gift-tag gift-tag-${don.type_don}">${typeLabel}</span></td>
+    <td>${valCell}${don.note ? '<br><span style="font-size:11px;color:#8c7a60;font-style:italic;">'+don.note+'</span>' : ''}</td>
+    <td style="font-size:13px;">${invNom}</td>
+    <td style="font-size:11px;color:#8c7a60;text-align:right;white-space:nowrap;">maintenant</td>
+    <td><button class="btn-action danger" onclick="deleteDon(${don.id})" title="Supprimer">🗑</button></td>
+  `;
+  tbody.appendChild(tr);
+
+  // Mettre à jour l'affichage du total
+  const totalEl = document.getElementById('total-argent-display');
+  if (totalEl && don.type_don === 'argent') {
+    const cur = parseInt(totalEl.textContent.replace(/\D/g,'')) || 0;
+    totalEl.textContent = (cur + parseInt(don.montant)).toLocaleString() + ' FCFA';
+  }
+  const nbEl = document.getElementById('nb-cadeaux-display');
+  if (nbEl) nbEl.textContent = parseInt(nbEl.textContent || 0) + 1;
+}
+
+/* ══════════════════════════════════════
+   SUPPRIMER DON
+══════════════════════════════════════ */
+function deleteDon(id) {
+  if (!confirm('Supprimer ce don ? Cette action est irréversible.')) return;
+  fetch(`/dons/${id}/delete/`, {
+    method: 'POST',
+    headers: { 'X-CSRFToken': CSRF, 'Content-Type': 'application/json' }
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      document.getElementById('don-row-' + id)?.remove();
+      showToast('Don supprimé', 'success');
+      updateKPIs();
+    } else { showToast('Erreur lors de la suppression', 'error'); }
+  })
+  .catch(() => showToast('Erreur réseau', 'error'));
+}
+
+/* ══════════════════════════════════════
+   FILTRES CADEAUX
+══════════════════════════════════════ */
+function filterGifts(type, btn) {
+  document.querySelectorAll('.gift-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#gifts-tbody tr[id^="don-row-"]').forEach(row => {
+    if (type === 'all' || row.dataset.type === type) row.style.display = '';
+    else row.style.display = 'none';
+  });
+}
+
+/* ══════════════════════════════════════
+   KPIs — mise à jour dynamique
+══════════════════════════════════════ */
+function updateKPIs() {
+  // Re-calculer depuis les lignes visibles (simple, sans appel réseau)
+  const rows = document.querySelectorAll('#invites-tbody tr[data-id]');
+  let total=0, oui=0, non=0;
+  rows.forEach(r => { total++; if(r.dataset.presence==='oui') oui++; else non++; });
+  const kpiTotal = document.getElementById('kpi-total');
+  const kpiOui   = document.getElementById('kpi-oui');
+  const kpiNon   = document.getElementById('kpi-non');
+  if(kpiTotal) kpiTotal.textContent = total;
+  if(kpiOui)   kpiOui.textContent   = oui;
+  if(kpiNon)   kpiNon.textContent   = non;
+  // Badge onglet
+  const badge = document.getElementById('badge-invites');
+  if(badge) badge.textContent = total;
+  // Cadeaux
+  const donsRows = document.querySelectorAll('#gifts-tbody tr[id^="don-row-"]');
+  const badgeCadeaux = document.getElementById('badge-cadeaux');
+  if(badgeCadeaux) badgeCadeaux.textContent = donsRows.length;
+}
+
+/* ══════════════════════════════════════
+   TOASTS
+══════════════════════════════════════ */
+function showToast(msg, type='') {
+  const area = document.getElementById('toast-area');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = (type==='success'?'✓ ':type==='error'?'✗ ':'') + msg;
+  area.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateY(12px)'; t.style.transition='all 0.3s'; setTimeout(()=>t.remove(),300); }, 3000);
+}
+</script>
 </body>
 </html>
